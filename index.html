@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления | BarberShop Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-primary: #1a1a2e;
+            --admin-secondary: #16213e;
+            --admin-accent: #00adb5;
+            --admin-light: #eeeeee;
+            --admin-dark: #0f0f1e;
+            --admin-success: #00b894;
+            --admin-warning: #fdcb6e;
+            --admin-danger: #d63031;
+            --transition: all 0.3s ease;
+            --radius: 10px;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-dark) 100%);
+            color: var(--admin-light);
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--admin-secondary);
+            padding: 2rem 1rem;
+            border-right: 2px solid var(--admin-accent);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .admin-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-logo h1 {
+            color: var(--admin-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .admin-logo p {
+            color: var(--admin-light);
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: var(--admin-light);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 173, 181, 0.1);
+            color: var(--admin-accent);
+        }
+
+        .nav-link.active {
+            background: var(--admin-accent);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-icon {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            margin-top: 2rem;
+            background: var(--admin-danger);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: var(--radius);
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--admin-accent);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--admin-secondary);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--admin-accent);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--admin-accent);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        /* Forms */
+        .admin-section {
+            background: var(--admin-secondary);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--admin-accent);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(0, 173, 181, 0.3);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--admin-light);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            color: var(--admin-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--admin-accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0097a7;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--admin-success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--admin-danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--admin-warning);
+            color: #333;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            background: var(--admin-secondary);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            padding: 1rem;
+            background: var(--admin-accent);
+            color: white;
+            font-weight: 600;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn.edit {
+            background: rgba(0, 184, 148, 0.2);
+            color: var(--admin-success);
+        }
+
+        .action-btn.delete {
+            background: rgba(214, 48, 49, 0.2);
+            color: var(--admin-danger);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--admin-secondary);
+            padding: 2rem;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            color: var(--admin-accent);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--admin-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--admin-danger);
+        }
+
+        /* Schedule Editor */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .schedule-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: var(--radius);
+        }
+
+        /* Success Message */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: rgba(0, 184, 148, 0.2);
+            border: 1px solid var(--admin-success);
+            color: var(--admin-success);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                transition: var(--transition);
+                z-index: 1001;
+                width: 280px;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1002;
+                background: var(--admin-accent);
+                color: white;
+                border: none;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                font-size: 1.5rem;
+                cursor: pointer;
+                box-shadow: var(--shadow);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Custom Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--admin-accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Toggle for Mobile -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="admin-logo">
+                <h1>BarberShop Admin</h1>
+                <p>Панель управления</p>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-section="dashboard">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        Дашборд
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="settings">
+                        <i class="nav-icon fas fa-cog"></i>
+                        Настройки
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="hairstyles">
+                        <i class="nav-icon fas fa-cut"></i>
+                        Прически
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="services">
+                        <i class="nav-icon fas fa-concierge-bell"></i>
+                        Услуги
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="masters">
+                        <i class="nav-icon fas fa-user-tie"></i>
+                        Мастера
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="schedule">
+                        <i class="nav-icon fas fa-clock"></i>
+                        Расписание
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="bookings">
+                        <i class="nav-icon fas fa-calendar-alt"></i>
+                        Записи
+                    </a>
+                </li>
+            </ul>
+            
+            <button class="logout-btn" onclick="window.open('client.html', '_blank')">
+                <i class="fas fa-external-link-alt"></i>
+                Просмотр сайта
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Success Alert -->
+            <div class="alert alert-success" id="successAlert">
+                <i class="fas fa-check-circle"></i> Изменения успешно сохранены!
+            </div>
+
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="admin-section">
+                <div class="admin-header">
+                    <h1 class="admin-title">Дашборд</h1>
+                    <div class="last-save" id="lastSave"></div>
+                </div>
+
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <span class="stat-number" id="hairstylesCount">0</span>
+                        <span class="stat-label">Прически в каталоге</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="servicesCount">0</span>
+                        <span class="stat-label">Услуг</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="mastersCount">0</span>
+                        <span class="stat-label">Мастеров</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="bookingsCount">0</span>
+                        <span class="stat-label">Записей</span>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Быстрые действия</h2>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="loadSection('hairstyles')">
+                        <i class="fas fa-plus"></i> Добавить прическу
+                    </button>
+                    <button class="btn btn-primary" onclick="loadSection('services')">
+                        <i class="fas fa-plus"></i> Добавить услугу
+                    </button>
+                    <button class="btn btn-primary" onclick="loadSection('masters')">
+                        <i class="fas fa-user-plus"></i> Добавить мастера
+                    </button>
+                    <button class="btn btn-success" onclick="saveAllChanges()">
+                        <i class="fas fa-save"></i> Сохранить все изменения
+                    </button>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settingsSection" class="admin-section" style="display: none;">
+                <h2 class="section-title">Настройки сайта</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Название барбершопа</label>
+                        <input type="text" class="form-control" id="shopNameInput" placeholder="Введите название">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Слоган/описание</label>
+                        <input type="text" class="form-control" id="shopTaglineInput" placeholder="Введите слоган">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Телефон для связи</label>
+                        <input type="tel" class="form-control" id="shopPhoneInput" placeholder="+7 (999) 123-45-67">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Адрес</label>
+                        <input type="text" class="form-control" id="shopAddressInput" placeholder="Введите адрес">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveSettings()">
+                    <i class="fas fa-save"></i> Сохранить настройки
+                </button>
+            </section>
+
+            <!-- Hairstyles Section -->
+            <section id="hairstylesSection" class="admin-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 class="section-title">Управление прическами</h2>
+                    <button class="btn btn-primary" onclick="openHairstyleModal()">
+                        <i class="fas fa-plus"></i> Новая прическа
+                    </button>
+                </div>
+                
+                <div class="table-header">
+                    <div>Фото</div>
+                    <div>Название</div>
+                    <div>Цена</div>
+                    <div>Действия</div>
+                </div>
+                
+                <div id="hairstylesList">
+                    <!-- Hairstyles will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Services Section -->
+            <section id="servicesSection" class="admin-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 class="section-title">Управление услугами</h2>
+                    <button class="btn btn-primary" onclick="openServiceModal()">
+                        <i class="fas fa-plus"></i> Новая услуга
+                    </button>
+                </div>
+                
+                <div class="table-header">
+                    <div>Иконка</div>
+                    <div>Название</div>
+                    <div>Цена</div>
+                    <div>Длительность</div>
+                    <div>Действия</div>
+                </div>
+                
+                <div id="servicesList">
+                    <!-- Services will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Masters Section -->
+            <section id="mastersSection" class="admin-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 class="section-title">Управление мастерами</h2>
+                    <button class="btn btn-primary" onclick="openMasterModal()">
+                        <i class="fas fa-user-plus"></i> Новый мастер
+                    </button>
+                </div>
+                
+                <div class="table-header">
+                    <div>Фото</div>
+                    <div>Имя</div>
+                    <div>Специализация</div>
+                    <div>Опыт</div>
+                    <div>Действия</div>
+                </div>
+                
+                <div id="mastersList">
+                    <!-- Masters will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Schedule Section -->
+            <section id="scheduleSection" class="admin-section" style="display: none;">
+                <h2 class="section-title">Рабочие часы</h2>
+                <div class="schedule-grid">
+                    <div class="schedule-item">
+                        <label class="form-label">Понедельник - Пятница</label>
+                        <input type="text" class="form-control" id="scheduleWeekdays" placeholder="9:00 - 21:00">
+                    </div>
+                    <div class="schedule-item">
+                        <label class="form-label">Суббота</label>
+                        <input type="text" class="form-control" id="scheduleSaturday" placeholder="10:00 - 20:00">
+                    </div>
+                    <div class="schedule-item">
+                        <label class="form-label">Воскресенье</label>
+                        <input type="text" class="form-control" id="scheduleSunday" placeholder="11:00 - 18:00">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveSchedule()" style="margin-top: 1rem;">
+                    <i class="fas fa-save"></i> Сохранить расписание
+                </button>
+            </section>
+
+            <!-- Bookings Section -->
+            <section id="bookingsSection" class="admin-section" style="display: none;">
+                <h2 class="section-title">Записи клиентов</h2>
+                <div id="bookingsList">
+                    <!-- Bookings will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Hairstyle Modal -->
+    <div class="modal" id="hairstyleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить/Изменить прическу</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="hairstyleForm">
+                <input type="hidden" id="hairstyleId">
+                <div class="form-group">
+                    <label class="form-label">Название прически</label>
+                    <input type="text" class="form-control" id="hairstyleName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Цена (₽)</label>
+                    <input type="number" class="form-control" id="hairstylePrice" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">URL изображения</label>
+                    <input type="text" class="form-control" id="hairstyleImage" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea class="form-control" id="hairstyleDescription" rows="3"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Service Modal -->
+    <div class="modal" id="serviceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить/Изменить услугу</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="serviceForm">
+                <input type="hidden" id="serviceId">
+                <div class="form-group">
+                    <label class="form-label">Название услуги</label>
+                    <input type="text" class="form-control" id="serviceName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Цена (₽)</label>
+                    <input type="number" class="form-control" id="servicePrice" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Длительность</label>
+                    <input type="text" class="form-control" id="serviceDuration" placeholder="30 мин" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Иконка (FontAwesome класс)</label>
+                    <input type="text" class="form-control" id="serviceIcon" placeholder="fa-cut" required>
+                    <small style="color: #aaa;">Пример: fa-cut, fa-shaving-razor, fa-user</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea class="form-control" id="serviceDescription" rows="3"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Master Modal -->
+    <div class="modal" id="masterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить/Изменить мастера</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="masterForm">
+                <input type="hidden" id="masterId">
+                <div class="form-group">
+                    <label class="form-label">Имя мастера</label>
+                    <input type="text" class="form-control" id="masterName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Специализация</label>
+                    <input type="text" class="form-control" id="masterSpecialty" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Опыт работы</label>
+                    <input type="text" class="form-control" id="masterExperience" placeholder="5 лет" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">URL фото</label>
+                    <input type="text" class="form-control" id="masterPhoto" placeholder="https://example.com/photo.jpg">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea class="form-control" id="masterDescription" rows="3"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let appData = JSON.parse(localStorage.getItem('barbershopData')) || {
+            shopName: 'BarberShop Pro',
+            shopTagline: 'Искусство стрижки и бритья',
+            shopPhone: '+7 (999) 123-45-67',
+            shopAddress: 'ул. Примерная, 123',
+            hairstyles: [
+                { id: 1, name: 'Классическая стрижка', price: 1200, image: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Классическая мужская стрижка' },
+                { id: 2, name: 'Мужское каре', price: 1500, image: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Современная стрижка каре' },
+                { id: 3, name: 'Бокс и полубокс', price: 1000, image: 'https://images.unsplash.com/photo-1567894340315-735d7c361db0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Короткая спортивная стрижка' },
+                { id: 4, name: 'Детская стрижка', price: 900, image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Стрижка для детей' }
+            ],
+            services: [
+                { id: 1, name: 'Стрижка машинкой', price: 800, duration: '30 мин', icon: 'fa-cut', description: 'Профессиональная стрижка машинкой' },
+                { id: 2, name: 'Королевское бритье', price: 1500, duration: '45 мин', icon: 'fa-shaving-razor', description: 'Бритье опасной бритвой с подготовкой' },
+                { id: 3, name: 'Уход за бородой', price: 1200, duration: '40 мин', icon: 'fa-user', description: 'Стрижка и укладка бороды' },
+                { id: 4, name: 'Тонирование волос', price: 2000, duration: '60 мин', icon: 'fa-paint-brush', description: 'Окрашивание волос' },
+                { id: 5, name: 'Массаж головы', price: 700, duration: '20 мин', icon: 'fa-spa', description: 'Расслабляющий массаж головы' },
+                { id: 6, name: 'Укладка', price: 600, duration: '15 мин', icon: 'fa-wind', description: 'Укладка волос' }
+            ],
+            masters: [
+                { id: 1, name: 'Александр Волков', specialty: 'Топ-барбер', experience: '8 лет', photo: 'https://images.unsplash.com/photo-1562788869-4ed32648eb72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Специалист по сложным стрижкам' },
+                { id: 2, name: 'Михаил Иванов', specialty: 'Бритьё и уход', experience: '6 лет', photo: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Эксперт по бритью опасной бритвой' },
+                { id: 3, name: 'Денис Смирнов', specialty: 'Детские стрижки', experience: '5 лет', photo: 'https://images.unsplash.com/photo-1599351431447-489cb6e3cc43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Специалист по детским стрижкам' }
+            ],
+            schedule: {
+                'Пн-Пт': '9:00 - 21:00',
+                'Суббота': '10:00 - 20:00',
+                'Воскресенье': '11:00 - 18:00'
+            },
+            bookings: []
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+            setupNavigation();
+            loadSettingsForm();
+            loadHairstyles();
+            loadServices();
+            loadMasters();
+            loadSchedule();
+            loadBookings();
+            setupFormHandlers();
+            
+            // Mobile menu toggle
+            document.getElementById('menuToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+        });
+
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    
+                    // Update active state
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Load section
+                    loadSection(section);
+                    
+                    // Close mobile menu if open
+                    document.getElementById('sidebar').classList.remove('active');
+                });
+            });
+        }
+
+        function loadSection(section) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.admin-section');
+            sections.forEach(sec => sec.style.display = 'none');
+            
+            // Show selected section
+            document.getElementById(section + 'Section').style.display = 'block';
+            
+            // Update dashboard stats if needed
+            if (section === 'dashboard') {
+                loadDashboard();
+            }
+        }
+
+        function loadDashboard() {
+            document.getElementById('hairstylesCount').textContent = appData.hairstyles.length;
+            document.getElementById('servicesCount').textContent = appData.services.length;
+            document.getElementById('mastersCount').textContent = appData.masters.length;
+            document.getElementById('bookingsCount').textContent = appData.bookings.length;
+            
+            const lastSave = localStorage.getItem('lastSaveTime');
+            if (lastSave) {
+                document.getElementById('lastSave').innerHTML = `
+                    <small>Последнее сохранение: ${lastSave}</small>
+                `;
+            }
+        }
+
+        function loadSettingsForm() {
+            document.getElementById('shopNameInput').value = appData.shopName;
+            document.getElementById('shopTaglineInput').value = appData.shopTagline;
+            document.getElementById('shopPhoneInput').value = appData.shopPhone || '';
+            document.getElementById('shopAddressInput').value = appData.shopAddress || '';
+        }
+
+        function saveSettings() {
+            appData.shopName = document.getElementById('shopNameInput').value;
+            appData.shopTagline = document.getElementById('shopTaglineInput').value;
+            appData.shopPhone = document.getElementById('shopPhoneInput').value;
+            appData.shopAddress = document.getElementById('shopAddressInput').value;
+            
+            saveAllChanges();
+            showSuccess('Настройки успешно сохранены!');
+        }
+
+        function loadHairstyles() {
+            const container = document.getElementById('hairstylesList');
+            container.innerHTML = '';
+            
+            appData.hairstyles.forEach(hairstyle => {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <div><img src="${hairstyle.image}" alt="${hairstyle.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;"></div>
+                    <div>${hairstyle.name}</div>
+                    <div>${hairstyle.price} ₽</div>
+                    <div class="action-buttons">
+                        <button class="action-btn edit" onclick="editHairstyle(${hairstyle.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="deleteHairstyle(${hairstyle.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function openHairstyleModal(editId = null) {
+            document.getElementById('hairstyleModal').style.display = 'flex';
+            
+            if (editId) {
+                const hairstyle = appData.hairstyles.find(h => h.id === editId);
+                if (hairstyle) {
+                    document.getElementById('hairstyleId').value = hairstyle.id;
+                    document.getElementById('hairstyleName').value = hairstyle.name;
+                    document.getElementById('hairstylePrice').value = hairstyle.price;
+                    document.getElementById('hairstyleImage').value = hairstyle.image || '';
+                    document.getElementById('hairstyleDescription').value = hairstyle.description || '';
+                }
+            } else {
+                document.getElementById('hairstyleForm').reset();
+                document.getElementById('hairstyleId').value = '';
+            }
+        }
+
+        function editHairstyle(id) {
+            openHairstyleModal(id);
+        }
+
+        function deleteHairstyle(id) {
+            if (confirm('Удалить эту прическу?')) {
+                appData.hairstyles = appData.hairstyles.filter(h => h.id !== id);
+                saveAllChanges();
+                loadHairstyles();
+                showSuccess('Прическа удалена');
+            }
+        }
+
+        function loadServices() {
+            const container = document.getElementById('servicesList');
+            container.innerHTML = '';
+            
+            appData.services.forEach(service => {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <div><i class="fas ${service.icon}" style="font-size: 1.5rem;"></i></div>
+                    <div>${service.name}</div>
+                    <div>${service.price} ₽</div>
+                    <div>${service.duration}</div>
+                    <div class="action-buttons">
+                        <button class="action-btn edit" onclick="editService(${service.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="deleteService(${service.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function openServiceModal(editId = null) {
+            document.getElementById('serviceModal').style.display = 'flex';
+            
+            if (editId) {
+                const service = appData.services.find(s => s.id === editId);
+                if (service) {
+                    document.getElementById('serviceId').value = service.id;
+                    document.getElementById('serviceName').value = service.name;
+                    document.getElementById('servicePrice').value = service.price;
+                    document.getElementById('serviceDuration').value = service.duration;
+                    document.getElementById('serviceIcon').value = service.icon;
+                    document.getElementById('serviceDescription').value = service.description || '';
+                }
+            } else {
+                document.getElementById('serviceForm').reset();
+                document.getElementById('serviceId').value = '';
+            }
+        }
+
+        function editService(id) {
+            openServiceModal(id);
+        }
+
+        function deleteService(id) {
+            if (confirm('Удалить эту услугу?')) {
+                appData.services = appData.services.filter(s => s.id !== id);
+                saveAllChanges();
+                loadServices();
+                showSuccess('Услуга удалена');
+            }
+        }
+
+        function loadMasters() {
+            const container = document.getElementById('mastersList');
+            container.innerHTML = '';
+            
+            appData.masters.forEach(master => {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <div><img src="${master.photo}" alt="${master.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;"></div>
+                    <div>${master.name}</div>
+                    <div>${master.specialty}</div>
+                    <div>${master.experience}</div>
+                    <div class="action-buttons">
+                        <button class="action-btn edit" onclick="editMaster(${master.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="deleteMaster(${master.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function openMasterModal(editId = null) {
+            document.getElementById('masterModal').style.display = 'flex';
+            
+            if (editId) {
+                const master = appData.masters.find(m => m.id === editId);
+                if (master) {
+                    document.getElementById('masterId').value = master.id;
+                    document.getElementById('masterName').value = master.name;
+                    document.getElementById('masterSpecialty').value = master.specialty;
+                    document.getElementById('masterExperience').value = master.experience;
+                    document.getElementById('masterPhoto').value = master.photo || '';
+                    document.getElementById('masterDescription').value = master.description || '';
+                }
+            } else {
+                document.getElementById('masterForm').reset();
+                document.getElementById('masterId').value = '';
+            }
+        }
+
+        function editMaster(id) {
+            openMasterModal(id);
+        }
+
+        function deleteMaster(id) {
+            if (confirm('Удалить этого мастера?')) {
+                appData.masters = appData.masters.filter(m => m.id !== id);
+                saveAllChanges();
+                loadMasters();
+                showSuccess('Мастер удален');
+            }
+        }
+
+        function loadSchedule() {
+            document.getElementById('scheduleWeekdays').value = appData.schedule['Пн-Пт'] || '';
+            document.getElementById('scheduleSaturday').value = appData.schedule['Суббота'] || '';
+            document.getElementById('scheduleSunday').value = appData.schedule['Воскресенье'] || '';
+        }
+
+        function saveSchedule() {
+            appData.schedule = {
+                'Пн-Пт': document.getElementById('scheduleWeekdays').value,
+                'Суббота': document.getElementById('scheduleSaturday').value,
+                'Воскресенье': document.getElementById('scheduleSunday').value
+            };
+            
+            saveAllChanges();
+            showSuccess('Расписание сохранено');
+        }
+
+        function loadBookings() {
+            const container = document.getElementById('bookingsList');
+            
+            if (appData.bookings.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #aaa; padding: 2rem;">Записей пока нет</p>';
+                return;
+            }
+            
+            container.innerHTML = appData.bookings.map((booking, index) => `
+                <div class="table-row">
+                    <div><strong>${booking.name}</strong><br><small>${booking.phone}</small></div>
+                    <div>${booking.service}</div>
+                    <div>${booking.date} ${booking.time}</div>
+                    <div>${booking.master}</div>
+                    <div><small>${booking.timestamp}</small></div>
+                </div>
+            `).join('');
+        }
+
+        function setupFormHandlers() {
+            // Hairstyle form
+            document.getElementById('hairstyleForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = document.getElementById('hairstyleId').value;
+                const newHairstyle = {
+                    id: id ? parseInt(id) : Date.now(),
+                    name: document.getElementById('hairstyleName').value,
+                    price: parseInt(document.getElementById('hairstylePrice').value),
+                    image: document.getElementById('hairstyleImage').value || 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    description: document.getElementById('hairstyleDescription').value
+                };
+                
+                if (id) {
+                    // Update existing
+                    const index = appData.hairstyles.findIndex(h => h.id === parseInt(id));
+                    if (index !== -1) {
+                        appData.hairstyles[index] = newHairstyle;
+                    }
+                } else {
+                    // Add new
+                    appData.hairstyles.push(newHairstyle);
+                }
+                
+                saveAllChanges();
+                loadHairstyles();
+                closeModal();
+                showSuccess('Прическа сохранена');
+            });
+            
+            // Service form
+            document.getElementById('serviceForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = document.getElementById('serviceId').value;
+                const newService = {
+                    id: id ? parseInt(id) : Date.now(),
+                    name: document.getElementById('serviceName').value,
+                    price: parseInt(document.getElementById('servicePrice').value),
+                    duration: document.getElementById('serviceDuration').value,
+                    icon: document.getElementById('serviceIcon').value,
+                    description: document.getElementById('serviceDescription').value
+                };
+                
+                if (id) {
+                    // Update existing
+                    const index = appData.services.findIndex(s => s.id === parseInt(id));
+                    if (index !== -1) {
+                        appData.services[index] = newService;
+                    }
+                } else {
+                    // Add new
+                    appData.services.push(newService);
+                }
+                
+                saveAllChanges();
+                loadServices();
+                closeModal();
+                showSuccess('Услуга сохранена');
+            });
+            
+            // Master form
+            document.getElementById('masterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = document.getElementById('masterId').value;
+                const newMaster = {
+                    id: id ? parseInt(id) : Date.now(),
+                    name: document.getElementById('masterName').value,
+                    specialty: document.getElementById('masterSpecialty').value,
+                    experience: document.getElementById('masterExperience').value,
+                    photo: document.getElementById('masterPhoto').value || 'https://images.unsplash.com/photo-1562788869-4ed32648eb72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    description: document.getElementById('masterDescription').value
+                };
+                
+                if (id) {
+                    // Update existing
+                    const index = appData.masters.findIndex(m => m.id === parseInt(id));
+                    if (index !== -1) {
+                        appData.masters[index] = newMaster;
+                    }
+                } else {
+                    // Add new
+                    appData.masters.push(newMaster);
+                }
+                
+                saveAllChanges();
+                loadMasters();
+                closeModal();
+                showSuccess('Мастер сохранен');
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('hairstyleModal').style.display = 'none';
+            document.getElementById('serviceModal').style.display = 'none';
+            document.getElementById('masterModal').style.display = 'none';
+        }
+
+        function saveAllChanges() {
+            // Save to localStorage
+            localStorage.setItem('barbershopData', JSON.stringify(appData));
+            
+            // Trigger storage event for client page
+            const event = new StorageEvent('storage', {
+                key: 'barbershopData',
+                newValue: JSON.stringify(appData),
+                url: window.location.href
+            });
+            window.dispatchEvent(event);
+            
+            // Update last save time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ru-RU');
+            const dateString = now.toLocaleDateString('ru-RU');
+            localStorage.setItem('lastSaveTime', `${dateString} ${timeString}`);
+            
+            // Update dashboard
+            loadDashboard();
+        }
+
+        function showSuccess(message) {
+            const alert = document.getElementById('successAlert');
+            alert.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        // Add test booking
+        function addTestBooking() {
+            const booking = {
+                name: 'Тестовый клиент',
+                phone: '+7 (999) 123-45-67',
+                date: new Date().toLocaleDateString('ru-RU'),
+                time: '15:00',
+                service: 'Классическая стрижка',
+                master: 'Александр Волков',
+                timestamp: new Date().toLocaleString('ru-RU')
+            };
+            
+            appData.bookings.push(booking);
+            saveAllChanges();
+            loadBookings();
+            showSuccess('Тестовая запись добавлена');
+        }
+    </script>
+</body>
+</html>
